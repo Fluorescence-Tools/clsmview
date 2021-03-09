@@ -1,0 +1,1 @@
+clsmview clsmview.__main__:main

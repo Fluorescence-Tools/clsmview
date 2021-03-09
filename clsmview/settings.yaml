@@ -1,0 +1,35 @@
+---
+verbose: false
+gui:
+  editor:
+    margins_background_color: "#cccccc"
+    marker_background_color: "#eeeeee"
+    caret_line_background_color: "#ffe4e4"
+    font_size: 9
+    font_family: Courier
+    language: Python
+  plot:
+    enable_grid: true
+    show_data_grid: true
+    show_residual_grid: true
+    show_acorr_grid: true
+    line_width: 0.5
+    hideTitle: true
+    enable_region_selector: true
+    show_legend: false
+    label_axis: false
+    pyqtgraph_config:
+      background: k
+      foreground: d
+      antialias: false
+      useWeave: true
+      leftButtonPan: true
+    colors:
+      region_selector: "#26a298"
+      region_selector_alpha: 100
+      data: "#ffa629"
+      model: "#d400cd"
+      residuals: "#df0101"
+      auto_corr: "#ff00ff"
+      inactive_transparency: 0.2
+      active_transparency: 1
