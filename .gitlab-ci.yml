@@ -67,7 +67,7 @@ test:linux:
     - conda activate test
     # Run GUI with xvfb - no X11 screen
     - |
-      xvfb-run -a -s "-screen 0 1400x900x24 +extension RANDR" -- k2dist &
+      xvfb-run -a -s "-screen 0 1400x900x24 +extension RANDR" -- clsmview &
       sleep 10
       pgrep -f clsmview | awk '{print "kill -9 " $1}' | sh
 
