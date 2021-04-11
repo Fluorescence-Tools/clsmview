@@ -1,3 +1,4 @@
+[![pipeline status](http://192.168.124.254:9080/tpeulen/clsmview/badges/master/pipeline.svg)](http://192.168.124.254:9080/tpeulen/clsmview/-/commits/master) 
 # clsmview
 
 ``clsmview`` is an application to work with time-tagged time-resolved (TTTR) confocal laser scanning (CLSM) data. ``clsmview`` 
