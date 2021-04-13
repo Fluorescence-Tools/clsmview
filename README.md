@@ -32,7 +32,7 @@ clsmview
 
 ### Conda
 ``clsmview`` depends on common python packages such as ``numpy``, ``opencv``, and ``pandas``.
-Additionally, ``clsmviewer`` depends on ``scikit-fluorescence``, ``tttrlib``, and ``imp``. Thus,
+Additionally, ``clsmviewer`` depends on ``tttrlib``, and ``imp``. Thus,
 to install ``clsmviewr`` make sure that conda channels that provide packages for the necessary
 dependencies are listed in the ``.condarc`` file 
 
