@@ -37,7 +37,6 @@ metadata = dict(
     description=DESCRIPTION,
     author=AUTHOR,
     author_email=EMAIL,
-    app_id=APP_ID,
     url=URL,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
