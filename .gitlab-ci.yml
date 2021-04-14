@@ -7,7 +7,6 @@ stages:
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  CONDA_PACKAGE: "clsmview"
   DEPLOY_VARIABLE: "nightly"
 
 workflow:
@@ -63,7 +62,7 @@ test:linux:
         conda config --add channels tpeulen
         conda config --add channels tpeulen/label/nightly
     - conda config --add channels "file://`pwd`/bld-dir"
-    - mamba create -n test python=3.7 ${CONDA_PACKAGE}
+    - mamba create -n test python=3.7 clsmview
     - conda activate test
     # Run GUI with xvfb - no X11 screen
     - |
