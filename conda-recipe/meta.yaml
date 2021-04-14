@@ -39,8 +39,8 @@ requirements:
     - pandas
     - pyyaml >=5.0.0
     - qtpy >=1.8.0
-    - pyqt >=5.13.0|5.9.*
-    - pyqtgraph >0.10.0|0.9.*
+    - pyqt >=5.13.0|>5.9.2|5.6.0.*
+    - pyqtgraph >0.10.0|0.9.10
     - tttrlib
     - matplotlib
     - pathlib2 # [py < 3]
