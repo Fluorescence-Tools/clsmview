@@ -64,7 +64,7 @@ test:linux:
     - conda config --add channels "file://`pwd`/bld-dir"
     - mamba create -n test python=3.7 clsmview
     - conda activate test
-    # Run GUI with xvfb - no X11 screen
+    # Run GUI with xvfb
     - |
       xvfb-run -a -s "-screen 0 1400x900x24 +extension RANDR" -- clsmview &
       sleep 10
