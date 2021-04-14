@@ -9,6 +9,7 @@ source:
 
 build:
   number: 0
+  noarch: python
   string: py{{ python }}
   entry_points:
     {% for entry_point_type, entry_points in data.get("entry_points", dict()).items() -%}
