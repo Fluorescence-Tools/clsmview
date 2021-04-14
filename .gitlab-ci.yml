@@ -21,8 +21,6 @@ build:linux:
   tags:
     - linux
   image: continuumio/miniconda3:latest
-  before_script:
-    - conda clean --all
   script:
     - echo "I am a build stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
