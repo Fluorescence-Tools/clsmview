@@ -9,7 +9,7 @@ source:
 
 build:
   number: 0
-  string: np{{ CONDA_NPY }}py{{ CONDA_PY }}
+  string: py{{ python }}
   entry_points:
     {% for entry_point_type, entry_points in data.get("entry_points", dict()).items() -%}
     {% for entry_point in entry_points -%}
@@ -38,8 +38,8 @@ requirements:
     - pandas
     - pyyaml >=5.0.0
     - qtpy >=1.8.0
-    - pyqt >=5.13.0|5.9.2.*|5.6.0.*
-    - pyqtgraph >0.10.0|0.9.10
+    - pyqt >=5.13.0|5.9.*
+    - pyqtgraph >0.10.0|0.9.*
     - tttrlib
     - matplotlib
     - pathlib2 # [py < 3]
