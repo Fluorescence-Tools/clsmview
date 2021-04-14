@@ -43,6 +43,7 @@ requirements:
     - pyqtgraph >0.10.0|0.9.10
     - tttrlib
     - matplotlib
+    - opencv
     - pathlib2 # [py < 3]
 
 about:
