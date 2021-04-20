@@ -7,6 +7,7 @@ stages:
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  MAMBA_VERSION: "0.10"
 
 build:linux:
   stage: build
@@ -16,7 +17,7 @@ build:linux:
   script:
     - echo "I am a build stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
-    - conda install mamba boa conda-verify -c conda-forge
+    - conda install mamba=$MAMBA_VERSION boa conda-verify -c conda-forge
     - mamba update -y -n base -c defaults --all
     - |
         conda config --add channels defaults
@@ -44,7 +45,7 @@ test:linux:
   script:
     - echo "I am a test stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
-    - conda install mamba conda-verify -c conda-forge
+    - conda install mamba=$MAMBA_VERSION conda-verify -c conda-forge
     - |
         conda config --add channels defaults
         conda config --add channels salilab
