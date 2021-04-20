@@ -29,6 +29,7 @@ build:linux:
     - |
         conda config --add channels defaults
         conda config --add channels conda-forge
+        conda config --add channels tpeulen
         conda config --add channels tpeulen/label/$ANACONDA_LABEL
     - conda mambabuild conda-recipe --output-folder bld-dir
   artifacts:
@@ -56,6 +57,7 @@ test:linux:
     - |
         conda config --add channels defaults
         conda config --add channels conda-forge
+        conda config --add channels tpeulen
         conda config --add channels tpeulen/label/$ANACONDA_LABEL
     - conda config --add channels "file://`pwd`/bld-dir"
     - mamba create -n test python=3.7 clsmview
