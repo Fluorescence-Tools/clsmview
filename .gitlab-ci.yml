@@ -34,7 +34,7 @@ test:linux:
   stage: test
   tags:
     - linux
-  image: ubuntu/18.04
+  image: ubuntu:18.04
   before_script:
     # Issue with OpenGL and X11 display
     # See: https://stackoverflow.com/questions/65675765/is-it-possible-to-run-x11-on-gitlab-ci
