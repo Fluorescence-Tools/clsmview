@@ -7,7 +7,6 @@ stages:
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  DEPLOY_VARIABLE: "nightly"
 
 workflow:
   rules:
@@ -25,13 +24,12 @@ build:linux:
     - echo "I am a build stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
     - conda install mamba boa conda-verify -c conda-forge
+    - if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then ANACONDA_LABEL=main; else ANACONDA_LABEL=nightly; fi
     - mamba update -y -n base -c defaults --all
     - |
         conda config --add channels defaults
-        conda config --add channels salilab
         conda config --add channels conda-forge
-        conda config --add channels tpeulen
-        conda config --add channels tpeulen/label/nightly
+        conda config --add channels tpeulen/label/$ANACONDA_LABEL
     - conda mambabuild conda-recipe --output-folder bld-dir
   artifacts:
     expire_in: 7 days
@@ -54,12 +52,11 @@ test:linux:
     - echo "I am a test stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
     - conda install mamba conda-verify -c conda-forge
+    - if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then ANACONDA_LABEL=main; else ANACONDA_LABEL=nightly; fi
     - |
         conda config --add channels defaults
-        conda config --add channels salilab
         conda config --add channels conda-forge
-        conda config --add channels tpeulen
-        conda config --add channels tpeulen/label/nightly
+        conda config --add channels tpeulen/label/$ANACONDA_LABEL
     - conda config --add channels "file://`pwd`/bld-dir"
     - mamba create -n test python=3.7 clsmview
     - conda activate test
@@ -80,4 +77,5 @@ deploy:linux:
     - echo "I am a depolyment stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
     - conda install anaconda-client
-    - anaconda -t ${ANACONDA_API_TOKEN} upload -l ${DEPLOY_VARIABLE} -u ${CONDA_USER} --force bld-dir/noarch/*.tar.bz2
+    - if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then ANACONDA_LABEL=main; else ANACONDA_LABEL=nightly; fi
+    - anaconda -t ${ANACONDA_API_TOKEN} upload -l ${ANACONDA_LABEL} -u ${CONDA_USER} --force bld-dir/linux-64/*.tar.bz2
