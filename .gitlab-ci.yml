@@ -40,11 +40,11 @@ test:linux:
     # See: https://stackoverflow.com/questions/65675765/is-it-possible-to-run-x11-on-gitlab-ci
     # See: https://github.com/conda-forge/pygridgen-feedstock/issues/10
     # procps is used to grep the process by name to kill it when needed
+    - apt update -y
+    - apt install -y xorg-dev libglu1-mesa libgl1-mesa-dev xvfb libxinerama1 libxcursor1 libgl1-mesa-glx procps wget
     - wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
     - sh miniconda.sh -b -p miniconda3
     - conda init
-    - apt update -y
-    - apt install -y xorg-dev libglu1-mesa libgl1-mesa-dev xvfb libxinerama1 libxcursor1 libgl1-mesa-glx procps
   script:
     - echo "I am a test stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
