@@ -24,12 +24,10 @@ build:linux:
     - echo "I am a build stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
     - conda install mamba boa conda-verify -c conda-forge
-    - if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then ANACONDA_LABEL=main; else ANACONDA_LABEL=nightly; fi
     - mamba update -y -n base -c defaults --all
     - conda config --add channels conda-forge
     # scikit-fluorescence
     - conda config --add channels tpeulen
-    - conda config --add channels tpeulen/label/$ANACONDA_LABEL
     # needed by scikit-fluorescence
     - conda config --add channels salilab
     - conda mambabuild conda-recipe --output-folder bld-dir
@@ -54,10 +52,8 @@ test:linux:
     - echo "I am a test stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
     - conda install mamba conda-verify -c conda-forge
-    - if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then ANACONDA_LABEL=main; else ANACONDA_LABEL=nightly; fi
     # scikit-fluorescence
-    - conda config --add channels tpeulen
-    - conda config --add channels tpeulen/label/$ANACONDA_LABEL
+    - conda config --add channels tpeulen 
     # needed by scikit-fluorescence
     - conda config --add channels salilab
     - conda config --add channels "file://`pwd`/bld-dir"
