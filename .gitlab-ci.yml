@@ -8,7 +8,6 @@ stages:
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  MAMBA_VERSION: "0.10"
 
 build:linux:
   stage: build
@@ -16,14 +15,9 @@ build:linux:
     - linux
   image: continuumio/miniconda3:latest
   script:
-    - echo "I am a build stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
     - conda install mamba=$MAMBA_VERSION boa conda-verify -c conda-forge
-    - |
-        conda config --add channels defaults
-        conda config --add channels salilab
-        conda config --add channels conda-forge
-        conda config --add channels tpeulen
+    - cp .condarc ~/.condarc
     - conda mambabuild conda-recipe --output-folder bld-dir
   artifacts:
     expire_in: 7 days
@@ -49,16 +43,11 @@ test:linux:
       conda config --set always_yes yes --set changeps1 no
       conda init
   script:
-    - echo "I am a test stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate base
     - conda install mamba=$MAMBA_VERSION -c conda-forge
-    - |
-        conda config --add channels salilab
-        conda config --add channels conda-forge
-        conda config --add channels tpeulen
+    - cp .condarc ~/.condarc
     - conda config --add channels "file://`pwd`/bld-dir"
-    - mamba install python
-    - mamba install clsmview
+    - mamba install python clsmview
     # fix see: https://stackoverflow.com/questions/62213783/ffmpeg-error-while-loading-shared-libraries-libopenh264-so-5
     - ln -s /miniconda3/lib/libopenh264.so /miniconda3/lib/libopenh264.so.5
     # Run GUI with xvfb
@@ -75,12 +64,11 @@ deploy:linux:
   dependencies:
     - build:linux
   script:
-    - echo "I am a depolyment stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
     - conda install anaconda-client
-    - if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then DEPLOY_VARIABLE=main; else DEPLOY_VARIABLE=nightly; fi
+    - if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then DEPLOY_VARIABLE=$LABEL_RELEASE; else DEPLOY_VARIABLE=$LABEL_TESTING; fi
     - anaconda -t ${ANACONDA_API_TOKEN} upload -l ${DEPLOY_VARIABLE} -u ${CONDA_USER} --force bld-dir/linux-64/*.tar.bz2
 
 chisurf:
   stage: Trigger-cross-projects
-  trigger: tpeulen/chisurf
+  trigger: chisurf/chisurf
