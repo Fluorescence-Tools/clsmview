@@ -51,7 +51,7 @@ test:linux:
     - conda init
   script:
     - echo "I am a test stage job for debian, running on docker using continuumio/miniconda3:latest image"
-    - source activate
+    - source activate base
     - conda install mamba=$MAMBA_VERSION conda-verify -c conda-forge
     - |
         conda config --add channels defaults
@@ -59,9 +59,8 @@ test:linux:
         conda config --add channels conda-forge
         conda config --add channels tpeulen
     - conda config --add channels "file://`pwd`/bld-dir"
-    - mamba create -n test python clsmview
-    - conda activate test
-    # issue with salilab opencv-3.4.2
+    - mamba install python
+    - mamba install clsmview
     # fix see: https://stackoverflow.com/questions/62213783/ffmpeg-error-while-loading-shared-libraries-libopenh264-so-5
     - ln -s ~/miniconda3/lib/libopenh264.so ~/miniconda3/envs/test/lib/libopenh264.so.5
     # Run GUI with xvfb
