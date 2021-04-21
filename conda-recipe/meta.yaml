@@ -48,6 +48,7 @@ requirements:
     - tttrlib
     - matplotlib
     - opencv
+    - ffmpeg # make sure that libopenh264.so is installed
     - openh264 # make sure that libopenh264.so is installed
     - scikit-fluorescence
     - pathlib2 # [py < 3]
