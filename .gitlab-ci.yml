@@ -44,8 +44,8 @@ test:linux:
       conda init
   script:
     - source activate base
-    - conda install mamba=$MAMBA_VERSION -c conda-forge
     - cp .condarc ~/.condarc
+    - conda install mamba=$MAMBA_VERSION
     - conda config --add channels "file://`pwd`/bld-dir"
     - mamba install python clsmview
     # fix see: https://stackoverflow.com/questions/62213783/ffmpeg-error-while-loading-shared-libraries-libopenh264-so-5
