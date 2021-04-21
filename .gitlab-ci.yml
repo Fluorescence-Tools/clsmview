@@ -7,6 +7,7 @@ stages:
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  MAMBA_VERSION: "0.10"
 
 build:linux:
   stage: build
@@ -16,8 +17,7 @@ build:linux:
   script:
     - echo "I am a build stage job for debian, running on docker using continuumio/miniconda3:latest image"
     - source activate
-    - conda install mamba boa conda-verify -c conda-forge
-    - mamba update -y -n base -c defaults --all
+    - conda install mamba=$MAMBA_VERSION boa conda-verify -c conda-forge
     - |
         conda config --add channels defaults
         conda config --add channels salilab
@@ -33,26 +33,33 @@ test:linux:
   stage: test
   tags:
     - linux
-  image: continuumio/miniconda3:latest
+  image: ubuntu:18.04
   before_script:
     # Issue with OpenGL and X11 display
     # See: https://stackoverflow.com/questions/65675765/is-it-possible-to-run-x11-on-gitlab-ci
     # See: https://github.com/conda-forge/pygridgen-feedstock/issues/10
     # procps is used to grep the process by name to kill it when needed
-    - apt update -y
-    - apt install -y xorg-dev libglu1-mesa libgl1-mesa-dev xvfb libxinerama1 libxcursor1 libgl1-mesa-glx procps
+    - |
+      apt update -y
+      apt install -y xorg-dev libglu1-mesa libgl1-mesa-dev xvfb libxinerama1 libxcursor1 libgl1-mesa-glx procps wget
+      wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+      bash miniconda.sh -b -p /miniconda3
+      export PATH="/miniconda3/bin:$PATH"
+      conda config --set always_yes yes --set changeps1 no
+      conda init
   script:
     - echo "I am a test stage job for debian, running on docker using continuumio/miniconda3:latest image"
-    - source activate
-    - conda install mamba conda-verify -c conda-forge
+    - source activate base
+    - conda install mamba=$MAMBA_VERSION -c conda-forge
     - |
-        conda config --add channels defaults
         conda config --add channels salilab
         conda config --add channels conda-forge
         conda config --add channels tpeulen
     - conda config --add channels "file://`pwd`/bld-dir"
-    - mamba create -n test python clsmview
-    - conda activate test
+    - mamba install python
+    - mamba install clsmview
+    # fix see: https://stackoverflow.com/questions/62213783/ffmpeg-error-while-loading-shared-libraries-libopenh264-so-5
+    - ln -s /miniconda3/lib/libopenh264.so /miniconda3/lib/libopenh264.so.5
     # Run GUI with xvfb
     - |
       xvfb-run -a -s "-screen 0 1400x900x24 +extension RANDR" -- clsmview &
@@ -71,4 +78,4 @@ deploy:linux:
     - source activate
     - conda install anaconda-client
     - if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then DEPLOY_VARIABLE=main; else DEPLOY_VARIABLE=nightly; fi
-    - anaconda -t ${ANACONDA_API_TOKEN} upload -l ${DEPLOY_VARIABLE} -u ${CONDA_USER} --force bld-dir/noarch/*.tar.bz2
+    - anaconda -t ${ANACONDA_API_TOKEN} upload -l ${DEPLOY_VARIABLE} -u ${CONDA_USER} --force bld-dir/linux-64/*.tar.bz2
