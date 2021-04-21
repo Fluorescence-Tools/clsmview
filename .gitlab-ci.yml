@@ -45,7 +45,7 @@ test:linux:
       apt install -y xorg-dev libglu1-mesa libgl1-mesa-dev xvfb libxinerama1 libxcursor1 libgl1-mesa-glx procps wget
       wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
       bash miniconda.sh -b -p /miniconda3
-      export PATH="$HOME/miniconda3/bin:$PATH"
+      export PATH="$/miniconda3/bin:$PATH"
       conda config --set always_yes yes --set changeps1 no
       conda init
   script:
