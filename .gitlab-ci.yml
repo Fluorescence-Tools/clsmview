@@ -16,8 +16,8 @@ build:linux:
   image: continuumio/miniconda3:latest
   script:
     - source activate
-    - conda install mamba=$MAMBA_VERSION boa conda-verify -c conda-forge
     - cp .condarc ~/.condarc
+    - conda install mamba=$MAMBA_VERSION boa conda-verify
     - conda mambabuild conda-recipe --output-folder bld-dir
   artifacts:
     expire_in: 7 days
