@@ -19,6 +19,7 @@ build:
     - {{ entry_point }}
     {% endfor %}
     {% endfor %}
+
 requirements:
   build:
     - python {{ python }}
@@ -34,15 +35,16 @@ requirements:
     - typing_extensions
     - pyyaml
     - setuptools
+    - pyqt
   run:
-    - python
+    - python {{ python }}
     - typing_extensions
     - numpy
     - pandas
     - pyyaml >=5.0.0
-    - qtpy >=1.8.0
-    - pyqt >=5.13.0|>5.9.2|5.6.0.*
-    - pyqtgraph >0.10.0|0.9.10
+    - qtpy
+    - pyqt
+    - pyqtgraph
     - tttrlib
     - matplotlib
     - opencv
