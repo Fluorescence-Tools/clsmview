@@ -74,10 +74,14 @@ deploy:conda:
   tags:
     - linux
   dependencies:
-    - build:linux
+    - test:linux
     - build:windows
     - build:osx
   before_script:
     - git submodule update --init --recursive --remote
   script:
     - ./tools/deploy.sh
+
+chisurf:
+  stage: Trigger-cross-projects
+  trigger: chisurf/chisurf
