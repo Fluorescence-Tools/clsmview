@@ -1,16 +1,18 @@
 {% set data = load_setup_py_data(setup_file='../setup.py', from_recipe_dir=True) %}
+{% set PY_VER_MAJOR = PY_VER[0] %}
+{% set PY_VER_MINOR = PY_VER[2] %}
 
 package:
   name: {{ data.get('name')|lower }}
   version: {{ data.get('version')|lower }}
 
 source:
-  path: ..
+#  path: ..
+  git_url: ..
 
 build:
   number: 0
-  noarch: python
-  string: py{{ python }}
+  string: py{{ PY_VER_MAJOR }}{{ PY_VER_MINOR }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
   entry_points:
     {% for entry_point_type, entry_points in data.get("entry_points", dict()).items() -%}
     {% for entry_point in entry_points -%}
@@ -18,12 +20,6 @@ build:
     {% endfor %}
     {% endfor %}
 requirements:
-  host:
-    - python
-    - numpy
-    - typing_extensions
-    - pyyaml
-    - setuptools
   build:
     - python {{ python }}
     - numpy
@@ -32,6 +28,12 @@ requirements:
     - pyyaml
     # Needed for pyrcc5 (updated pyqt resource file)
     - pyqt >=5.13.0|5.9.2.*|5.6.0.*
+  host:
+    - python
+    - numpy
+    - typing_extensions
+    - pyyaml
+    - setuptools
   run:
     - python
     - typing_extensions
