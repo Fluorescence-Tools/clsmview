@@ -74,7 +74,7 @@ deploy:conda:
   tags:
     - linux
   dependencies:
-    - test:linux
+    - build:linux
     - build:windows
     - build:osx
   before_script:
