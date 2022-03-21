@@ -48,6 +48,7 @@ requirements:
     - tttrlib
     - matplotlib
     - opencv
+    - scipy
     - scikit-fluorescence
     - pathlib2 # [py < 3]
 
