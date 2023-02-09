@@ -12,7 +12,7 @@ build:linux:
     name: condaforge/linux-anvil-cos7-x86_64
     entrypoint: [ "/bin/bash", "-i", "-c" ]
   before_script:
-    - mamba install git
+    - yum install git
     - git submodule update --init --recursive --remote
   script:
     - ./tools/build.sh
