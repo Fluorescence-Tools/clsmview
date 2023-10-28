@@ -25,20 +25,20 @@ requirements:
     - python {{ python }}
     - numpy
     - setuptools
-    - typing_extensions
+    - typing_extensions <=4.5
     - pyyaml
     # Needed for pyrcc5 (updated pyqt resource file)
     - pyqt
   host:
     - python
     - numpy
-    - typing_extensions
+    - typing_extensions <=4.5
     - pyyaml
     - setuptools
     - pyqt
   run:
     - python {{ python }}
-    - typing_extensions
+    - typing_extensions <=4.5
     - numpy
     - pandas
     - pyyaml >=5.0.0
