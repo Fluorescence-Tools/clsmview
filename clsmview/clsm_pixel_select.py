@@ -5,7 +5,8 @@ to select pixels, and create and export fluorescence decay histograms. Exported
 decay histograms can be directly used in ChiSurf.
 """
 from __future__ import annotations
-from typing import List, Dict
+
+import typing
 
 import sys
 import os
@@ -92,28 +93,24 @@ class CLSMPixelSelect(QtWidgets.QWidget):
     current_image_subset_1: np.ndarray = None
     current_image_subset_2: np.ndarray = None
 
-    clsm_images: Dict[str, tttrlib.CLSMImage] = dict()
-    clsm_representations: Dict[str, np.ndarray] = dict()
+    clsm_images: typing.Dict[str, tttrlib.CLSMImage] = dict()
+    clsm_representations: typing.Dict[str, np.ndarray] = dict()
 
     brush_kernel: np.ndarray = None
     brush_size: int = 7
     brush_width: float = 3
-    masks: Dict[str, np.ndarray] = dict()
+    masks: typing.Dict[str, np.ndarray] = dict()
 
     img_plot: pyqtgraph.PlotWidget = None
     frc_plot_window: pyqtgraph.PlotWidget = None
     current_decay = pd.DataFrame()  # type: pd.DataFrame
 
     def get_data_curves(self, *args, **kwargs):
-        #  type: (List, Dict) -> List[pd.DataFrame]
+        #  type: (typing.List, typing.Dict) -> typing.List[pd.DataFrame]
         return self._curves
 
     @property
     def curve_name(self):
-        # type: () -> str
-        """
-        :return: The name of the currently selected curve
-        """
         s = str(self.lineEdit.text())
         if len(s) == 0:
             return "no-name"
@@ -121,7 +118,6 @@ class CLSMPixelSelect(QtWidgets.QWidget):
             return s
 
     def onRemoveDataset(self):
-        # type: () -> ()
         selected_index = [
             i.row() for i in self.cs.selectedIndexes()
         ]
@@ -134,17 +130,13 @@ class CLSMPixelSelect(QtWidgets.QWidget):
         self.plot_all_curves()
 
     def clear_curves(self, *args):
-        # type: (List) -> ()
+        # type: (typing.List) -> ()
         self._curves.clear()
         plot = self.plot.getPlotItem()
         plot.clear()
         self.cs.update()
 
-    def remove_curve(
-            self,
-            selected_index=None
-    ):
-        # type: (List[int])->None
+    def remove_curve(self, selected_index: typing.List[int] = None):
         # Read from UI
         if selected_index is None:
             selected_index = [
@@ -199,7 +191,7 @@ class CLSMPixelSelect(QtWidgets.QWidget):
         # plot.autoRange()
 
     def add_curve(self, *args, v=None, **kwargs):
-        # type: (List, pd.DataFrame, Dict) -> None
+        # type: (typing.List, pd.DataFrame, typing.Dict) -> None
         decay = v if isinstance(v, pd.DataFrame) else copy.copy(self.current_decay)
         try:
             name = self.listWidget.currentItem().text()
@@ -217,12 +209,11 @@ class CLSMPixelSelect(QtWidgets.QWidget):
     def open_tttr_file(
             self,
             *args,
-            filename=None,
-            tttr_type=None
+            filename: str = None,
+            tttr_type: str = None
     ) -> None:
-        # type: (str, str)->()
         """Opens a tttr file and sets the attribute '.tttr_data'.
-        If no filename an file selection window is used to find a tttr file.
+        If no filename a file selection window is used to find a tttr file.
         If no tttr_type is specified the values provided by the UI are used.
 
         :param filename: (optional) parameter specifying the filename
@@ -247,10 +238,16 @@ class CLSMPixelSelect(QtWidgets.QWidget):
         if os.path.isfile(filename):
             self.lineEdit.setText(filename)
             # Load TTTR data
-            self.tttr_data = tttrlib.TTTR(
-                filename,
-                tttr_type
-            )
+            self.tttr_data = tttrlib.TTTR(filename, tttr_type)
+            if tttr_type in ('PTU', 'HT3'):
+                new_clsm_settings = tttrlib.CLSMImage.read_clsm_settings(self.tttr_data)
+                current_setup = self.comboBox_5.currentText()
+                clsm_settings[current_setup]['frame_marker'] = new_clsm_settings['marker_frame_start']
+                clsm_settings[current_setup]['line_start_marker'] = new_clsm_settings['marker_line_start']
+                clsm_settings[current_setup]['line_stop_marker'] = new_clsm_settings['marker_line_stop']
+                clsm_settings[current_setup]['event_type_marker'] = new_clsm_settings['marker_event_type']
+                clsm_settings[current_setup]['pixel_per_line'] = new_clsm_settings['n_pixel_per_line']
+                self.update_clsm_settings(current_setup, clsm_settings)
 
     def add_representation(
             self,
@@ -289,15 +286,10 @@ class CLSMPixelSelect(QtWidgets.QWidget):
 
         if image_type == "Mean micro time":
             n_ph_min = int(self.spinBox.value())
-            mean_micro_time = clsm_image.get_mean_micro_time_image(
-                self.tttr_data,
-                n_ph_min,
-                False
-            )
+            mean_micro_time = clsm_image.get_mean_micro_time_image(self.tttr_data, n_ph_min, False)
             data = mean_micro_time.astype(np.float64)
         elif image_type == "Intensity":
-            intensity_image = clsm_image.get_intensity_image()
-            data = intensity_image.astype(np.float64)
+            data = clsm_image.intensity.astype(np.float64)
         else:
             mean_micro_time = clsm_image.get_mean_micro_time_image(
                 self.tttr_data,
@@ -315,11 +307,7 @@ class CLSMPixelSelect(QtWidgets.QWidget):
         )
         self.image_changed()
 
-    def add_mask(
-            self,
-            *args,
-            mask_name: str = None
-    ) -> None:
+    def add_mask(self, *args, mask_name: str = None) -> None:
         if mask_name is None:
             mask_name = self.lineEdit_5.text()
         self.masks[mask_name] = self.pixel_selection.image
@@ -329,10 +317,7 @@ class CLSMPixelSelect(QtWidgets.QWidget):
         for mn in self.masks.keys():
             self.listWidget.addItem(mn)
 
-    def mask_changed(
-            self,
-            *args
-    ) -> None:
+    def mask_changed(self, *args) -> None:
         mask_name = self.listWidget.currentItem().text()
         d = self.masks[mask_name]
         d *= np.max(self.img.image.flatten())
@@ -342,7 +327,7 @@ class CLSMPixelSelect(QtWidgets.QWidget):
 
     def get_selected_masks(
             self
-    ) -> List[str]:
+    ) -> typing.List[str]:
         """Returns a list of mask names that are currently
         selected in the UI.
 
@@ -361,7 +346,7 @@ class CLSMPixelSelect(QtWidgets.QWidget):
     def remove_masks(
             self,
             *args,
-            mask_names: List[str] = None
+            mask_names: typing.List[str] = None
     ) -> None:
         # Read from UI
         if mask_names is None:
@@ -404,9 +389,7 @@ class CLSMPixelSelect(QtWidgets.QWidget):
             filename = QtWidgets.QFileDialog.getOpenFileName(
                 None, 'Image file', None, 'All files (*.png)'
             )
-        image = cv2.imread(
-            filename
-        )
+        image = cv2.imread(filename)
         self.pixel_selection.setImage(
             image=cv2.cvtColor(
                 image, cv2.COLOR_BGR2GRAY
@@ -528,7 +511,7 @@ class CLSMPixelSelect(QtWidgets.QWidget):
             )
             tac_coarsening = int(self.comboBox_6.currentText())
             stack_frames = self.radioButton_4.isChecked() or self.radioButton_5.isChecked()
-            decay = clsm_image_object.get_average_decay_of_pixels(
+            decay = clsm_image_object.get_decay_of_pixels(
                 tttr_data=self.tttr_data,
                 mask=selection,
                 tac_coarsening=tac_coarsening,
@@ -650,10 +633,27 @@ class CLSMPixelSelect(QtWidgets.QWidget):
         if not select:
             self.brush_kernel *= -1
 
-    def setup_changed(
-            self,
-            *args
-    ) -> None:
+    def update_clsm_settings(self, current_setup, clsm_settings):
+        # frame marker
+        frame_marker_text: str = ','.join([str(x) for x in clsm_settings[current_setup]['frame_marker']])
+        self.lineEdit_2.setText(frame_marker_text)
+        # line start
+        self.spinBox_4.setValue(
+            clsm_settings[current_setup]['line_start_marker']
+        )
+        # line stop
+        self.spinBox_5.setValue(
+            clsm_settings[current_setup]['line_stop_marker']
+        )
+        # event marker
+        self.spinBox_6.setValue(
+            clsm_settings[current_setup]['event_type_marker']
+        )
+        # number of pixel
+        self.spinBox_7.setValue(
+            clsm_settings[current_setup].get('pixel_per_line', 0)
+        )
+    def setup_changed(self, *args) -> None:
         current_setup = self.comboBox_5.currentText()
         tttr_type = clsm_settings[current_setup]['tttr_type']
         tttr_type_idx = self.comboBox_4.findText(tttr_type)
@@ -661,40 +661,15 @@ class CLSMPixelSelect(QtWidgets.QWidget):
         clsm_routine = clsm_settings[current_setup]['routine']
         clsm_routine_idx = self.comboBox.findText(clsm_routine)
         self.comboBox.setCurrentIndex(clsm_routine_idx)
+        self.update_clsm_settings(current_setup, clsm_settings)
 
-        # frame marker
-        self.lineEdit_2.setText(
-            str(clsm_settings[current_setup]['frame_marker'])
-        )
 
-        # line start
-        self.spinBox_4.setValue(
-            clsm_settings[current_setup]['line_start_marker']
-        )
-
-        # line stop
-        self.spinBox_5.setValue(
-            clsm_settings[current_setup]['line_stop_marker']
-        )
-
-        # event marker
-        self.spinBox_6.setValue(
-            clsm_settings[current_setup]['event_type_marker']
-        )
-
-    def clear_images(
-            self,
-            *args
-    ) -> None:
+    def clear_images(self, *args) -> None:
         self.clsm_representations.clear()
         self.comboBox_7.clear()
         self.image_changed()
 
-    def remove_image(
-            self,
-            *args,
-            image_name: str = None
-    ) -> None:
+    def remove_image(self, *args, image_name: str = None) -> None:
         # Read from UI
         if image_name is None:
             image_name = self.comboBox_7.currentText()
@@ -724,6 +699,8 @@ class CLSMPixelSelect(QtWidgets.QWidget):
             frame_marker = [
                 int(i) for i in str(self.lineEdit_2.text()).split(",")
             ]
+            if len(frame_marker) == 0:
+                frame_marker = None
         if line_start_marker is None:
             line_start_marker = int(self.spinBox_4.value())
         if line_stop_marker is None:
@@ -748,7 +725,7 @@ class CLSMPixelSelect(QtWidgets.QWidget):
             pixel_per_line,
             reading_routine
         )
-        clsm_image.fill_pixels(
+        clsm_image.fill(
             tttr_data=self.tttr_data,
             channels=channels
         )
