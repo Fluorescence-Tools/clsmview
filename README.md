@@ -33,25 +33,19 @@ clsmview
 ```
 
 ### Conda
-``clsmview`` depends on common python packages such as ``numpy``, ``opencv``, and ``pandas``.
-Additionally, ``clsmviewer`` depends on ``tttrlib``, and ``imp``. Thus,
-to install ``clsmviewr`` make sure that conda channels that provide packages for the necessary
-dependencies are listed in the ``.condarc`` file 
+``clsmview`` can be installed using conda (best in a separate environment)
 
-```yaml
-channels:
-  - salilab
-  - tpeulen
-  - tpeulen/label/nightly
-  - conda-forge
-  - defaults
+```bash
+conda create clsmview
+conda activate clsmview
+mamba install clsmview -c tpeeulen
 ```
 
-To avoid potential conflicts ``clsmview`` can be installed in a separate environment. 
+To run `clsmview` activate its environment and use the `clsmview` command
 
-```commandline
-conda create -n test
-conda install clsmview
+```bash
+conda activate clsmview
+clsmview
 ```
 
 
