@@ -12,10 +12,7 @@ import sys
 import os
 import yaml
 import copy
-try:
-    import pathlib
-except ImportError:
-    import pathlib2 as pathlib
+import pathlib
 
 import pyqtgraph
 import pyqtgraph.dockarea
@@ -84,14 +81,14 @@ try:
     from chisurf.data import DataCurve
     colors = chisurf.settings.colors
 except ModuleNotFoundError:
-    from selector import ExperimentalDataSelector
+    from clsmview.selector import ExperimentalDataSelector
     with open(pathlib.Path(__file__).parent / 'settings.yaml') as fp:
         settings = yaml.safe_load(fp)
         plot_settings = settings['gui']['plot']
     imported_datasets = list()
     chisurf = None
     experiment = None
-    from colors import colors
+    from . colors import colors
 
 
 clsm_settings = yaml.safe_load(
@@ -900,7 +897,7 @@ class CLSMPixelSelect(QtWidgets.QWidget):
                 os.path.dirname(
                     os.path.abspath(__file__)
                 ),
-                "clsm_pixel_select.ui"
+                "gui.ui"
             ),
             self
         )
