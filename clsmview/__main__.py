@@ -1,11 +1,11 @@
 import sys
-import clsmview.clsm_pixel_select
+import clsmview.gui
 from qtpy.QtWidgets import QApplication
 
 
 def main():
     app = QApplication(sys.argv)
-    gui = clsmview.clsm_pixel_select.CLSMPixelSelect()
+    gui = clsmview.gui.CLSMPixelSelect()
     gui.show()
     app.exec_()
 
