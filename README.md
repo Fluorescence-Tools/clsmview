@@ -1,4 +1,6 @@
-[![pipeline status](https://gitlab.peulen.xyz/tpeulen/clsmview/badges/master/pipeline.svg)](http://gitlab.peulen.xyz/tpeulen/clsmview/-/commits/master) 
+![conda build](https://github.com/fluorescence-tools/clsmview/actions/workflows/conda-build.yml/badge.svg)
+[![Anaconda-Server Version](https://anaconda.org/tpeulen/clsmview/badges/version.svg)](https://anaconda.org/tpeulen/clsmview)
+
 # clsmview
 
 ``clsmview`` is an application to work with time-tagged time-resolved (TTTR) confocal laser scanning (CLSM) data. ``clsmview`` 
@@ -53,4 +55,4 @@ conda install clsmview
 ```
 
 
-[1]: doc/gui.png "ndxplorer GUI"
+[1]: doc/gui.png "clsmview GUI"
