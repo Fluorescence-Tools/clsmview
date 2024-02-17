@@ -1,5 +1,7 @@
 from __future__ import print_function
-from typing import List, Callable
+
+import typing
+from typing import Callable
 
 import os
 import pandas as pd
@@ -9,49 +11,42 @@ from qtpy import QtWidgets, QtCore, QtGui
 
 class ExperimentalDataSelector(QtWidgets.QTreeWidget):
 
-    _data_sets = list()  # type: List[pd.DataFrame]
+    _data_sets: typing.List[pd.DataFrame] = list()
 
     @property
-    def curve_name(self):
-        # type: () -> str
+    def curve_name(self) -> str:
         try:
             return self.selected_dataset.name
         except AttributeError:
             return "Noname"
 
     @property
-    def datasets(self):
-        # type: () -> List[pd.DataFrame]
+    def datasets(self) -> typing.List[pd.DataFrame]:
         data_curves = self.get_data_sets(curve_type=self.curve_type)
         return data_curves
 
     @property
-    def selected_curve_index(self):
-        # type: () -> int
+    def selected_curve_index(self) -> int:
         if self.currentIndex().parent().isValid():
             return self.currentIndex().parent().row()
         else:
             return self.currentIndex().row()
 
     @selected_curve_index.setter
-    def selected_curve_index(self, v):
-        # type: (int) -> None
+    def selected_curve_index(self, v: int) -> None:
         self.setCurrentItem(self.topLevelItem(v))
 
     @property
-    def selected_dataset(self):
-        # type: () -> pd.DataFrame
+    def selected_dataset(self) -> pd.DataFrame:
         return self.datasets[self.selected_curve_index]
 
     @property
-    def selected_datasets(self):
-        # type: () -> List[pd.DataFrame]
+    def selected_datasets(self) -> typing.List[pd.DataFrame]:
         data_sets_idx = self.selected_dataset_idx
         return [self.datasets[i] for i in data_sets_idx]
 
     @property
-    def selected_dataset_idx(self):
-        # type: () -> List[int]
+    def selected_dataset_idx(self) -> typing.List[int]:
         return [r.row() for r in self.selectedIndexes()]
 
     def onCurveChanged(self):
@@ -70,8 +65,7 @@ class ExperimentalDataSelector(QtWidgets.QTreeWidget):
         self._data_sets = data_sets
         self.update(update_others=True)
 
-    def onSaveDataset(self, filename=None):
-        # type: (str) -> None
+    def onSaveDataset(self, filename: str = None) -> None:
         if not isinstance(filename, str):
             filename, _ = QtWidgets.QFileDialog.getSaveFileName(None, "", None, "*.*")
         base_name, extension = os.path.splitext(filename)
@@ -130,19 +124,6 @@ class ExperimentalDataSelector(QtWidgets.QTreeWidget):
             icon: QtGui.QIcon = None,
             context_menu_enabled: bool = True
     ):
-        """
-
-        :param fit:
-        :param setup:
-        :param drag_enabled:
-        :param click_close:
-        :param change_event:
-        :param curve_types:
-        :param get_data_sets:
-        :param parent:
-        :param icon:
-        :param context_menu_enabled: if True there is a context menu
-        """
         if get_data_sets is None:
             def get_data_sets(**kwargs):
                 return self._data_sets
@@ -160,9 +141,8 @@ class ExperimentalDataSelector(QtWidgets.QTreeWidget):
         self.click_close = click_close
         self.context_menu_enabled = context_menu_enabled
 
-        super().__init__(
-            parent=parent
-        )
+        super().__init__(parent)
+
         self.setWindowIcon(icon)
         self.setWordWrap(True)
         self.setHeaderHidden(True)
