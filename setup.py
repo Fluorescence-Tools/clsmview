@@ -1,10 +1,5 @@
-#!/usr/bin/python
-try:
-    import numpy as np
-except ImportError:
-    np = None
 from setuptools import setup, find_packages
-from clsmview import info
+import clsmview.info as info
 
 NAME = info.__name__
 VERSION = info.__version__
