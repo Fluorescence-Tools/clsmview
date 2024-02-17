@@ -31,7 +31,6 @@ requirements:
     - typing_extensions <=4.5
     - pyyaml
     - setuptools
-    - pyqt
   run:
     - python {{ python }}
     - typing_extensions <=4.5
