@@ -35,6 +35,7 @@ requirements:
     - python {{ python }}
     - typing_extensions <=4.5
     - numpy
+    - numba
     - pandas
     - pyyaml >=5.0.0
     - qtpy
