@@ -21,7 +21,7 @@ requirements:
     - python {{ python }}
     - numpy
     - setuptools
-    - typing_extensions <=4.5
+    - typing_extensions
     - pyyaml
     # Needed for pyrcc5 (updated pyqt resource file)
     - pyqt
@@ -33,7 +33,7 @@ requirements:
     - setuptools
   run:
     - python {{ python }}
-    - typing_extensions <=4.5
+    - typing_extensions
     - numpy
     - numba
     - pandas
