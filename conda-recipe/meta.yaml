@@ -40,7 +40,7 @@ requirements:
     - pyyaml >=5.0.0
     - qtpy
     - pyqt
-    - pyqtgraph
+    - pyqtgraph 0.12.*
     - tttrlib
     - matplotlib
     - opencv
